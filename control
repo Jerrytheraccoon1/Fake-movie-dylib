@@ -1,0 +1,9 @@
+Package: com.yourname.cinestream
+Name: CineStreamGate
+Depends: mobilesubstrate
+Version: 0.0.1
+Architecture: iphoneos-arm64
+Description: Movie vault skin for Discord with 1024 access code.
+Maintainer: YourName
+Author: YourName
+Section: Tweaks
