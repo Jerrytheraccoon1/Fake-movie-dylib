@@ -3,14 +3,19 @@ on: [push]
 
 jobs:
   build:
-    runs-on: macos-26 # Using the 2026 latest runner
+    runs-on: macos-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install Theos
+      - name: Setup Theos
         run: |
-          bash -c "$(curl -fsSL https://raw.githubusercontent.com/theos/theos/master/bin/install-theos)"
+          # Install Theos manually to avoid the API error
+          git clone --recursive https://github.com/theos/theos.git ~/theos
+          # Download a specific patched SDK manually
+          mkdir -p ~/theos/sdks
+          curl -LO https://github.com/theos/sdks/archive/master.tar.gz
+          tar -xf master.tar.gz -C ~/theos/sdks --strip-components=1
           echo "THEOS=~/theos" >> $GITHUB_ENV
 
       - name: Build Tweak
@@ -18,6 +23,8 @@ jobs:
           make package FINALPACKAGE=1
         env:
           THEOS: ~/theos
+          # We tell the compiler exactly which SDK to use
+          SDKVERSION: 14.5 
 
       - name: Upload Dylib
         uses: actions/upload-artifact@v4
